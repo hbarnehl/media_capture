@@ -1,5 +1,8 @@
-######################## Load Libraries
+# Title: STM Model Estimation and Visualisation
+# Description: This script estimates a structural topic model on the dataset and visualises the results.
 
+
+# Load Libraries
 library(tidyverse)
 library(stm)
 library(tm)
@@ -8,10 +11,10 @@ library(stmCorrViz)
 ######################## Load and Transform Data
 
 # load dataframe with texts
-data <- read_csv("Data/dataset_token_ready.csv")
+data <- read_csv("data/dataset_token_ready.csv")
 
 # load tokenized texts and substitute for the text column in dataframe
-tokens = read_csv("tokens/tokens_trigrams.csv", col_names = FALSE)
+tokens = read_csv("data/tokens_trigrams.csv", col_names = FALSE)
 data$tokens <- tokens$X1
 
 # there are some values missing for date, delete those rows
@@ -46,7 +49,7 @@ data <- data %>%
   select(page, text, tokens, days, date, position, title)
 
 # save processed data
-save(data, file = "Data/df_with_tokens_filtered.Rdata")
+save(data, file = "data/df_with_tokens_filtered.Rdata")
 
 # remove all objects from memory
 remove(list = ls())
@@ -54,7 +57,7 @@ remove(list = ls())
 ######################## Preprocess Data
 
 # load processed data
-load("Data/df_with_tokens_filtered.Rdata")
+load("data/df_with_tokens_filtered.Rdata")
 
 # process data
 data <- textProcessor(data$tokens,
@@ -67,7 +70,7 @@ data <- textProcessor(data$tokens,
                            removestopwords = TRUE)
 
 # save processed data
-save(data, file = "Data/stm_preprocessed_neutral_disag.Rdata")
+save(data, file = "data/stm_preprocessed_neutral_disag.Rdata")
 
 # remove all objects from memory
 remove(list = ls())
@@ -75,7 +78,7 @@ remove(list = ls())
 ######################## Prepare Data for Model Estimation
 
 # load processed data
-load("Data/stm_preprocessed_neutral_disag.Rdata")
+load("data/stm_preprocessed_neutral_disag.Rdata")
 
 # prepare data for analysis
 out <- prepDocuments(data$documents,
@@ -89,20 +92,20 @@ vocab <- out$vocab
 meta <- out$meta
 
 # save prepared data, remove everything from memory
-save(docs, vocab, meta, file = "Data/stm_model_inputs_neutral_disag.Rdata")
+save(docs, vocab, meta, file = "data/stm_model_inputs_neutral_disag.Rdata")
 remove(list = ls())
 
 ######################## Estimate Model
 
 # load prepared data
-load("Data/stm_model_inputs_neutral_disag.Rdata")
+load("data/stm_model_inputs_neutral_disag.Rdata")
 meta <- meta %>% 
   select(page, days, position)
 
 
 
 # run stm
-load("Data/stm_model_inputs_neutral_disag.Rdata")
+load("data/stm_model_inputs_neutral_disag.Rdata")
 i = 30
 meta <- meta %>% 
   select(page, days, position)
@@ -111,24 +114,24 @@ PrevFit <- stm(documents = docs, vocab = vocab, K = i,
                content =~ position,
                data = meta,
                emtol = 5e-04, max.em.its = 10)
-name = str_c("Models/stm_model_content_interaction_neutral_disag",as.String(i), ".Rdata")
+name = str_c("data/models/stm_model_content_interaction_neutral_disag",as.String(i), ".Rdata")
 save(PrevFit, file = name)
 rm(list = ls(all.names = TRUE))
 gc()
 
 # save stm model
-save(PrevFit, file = "Models/stm_model_base.Rdata")
+save(PrevFit, file = "data/models/stm_model_base.Rdata")
 
 remove(list = ls())
 
 ######################## Investigate and Visualise Estimated Model ###########
 
 # load prepared data
-load("Models/stm_model_content_interaction_neutral_disag30.Rdata")
+load("data/models/stm_model_content_interaction_neutral_disag30.Rdata")
 # load text data
-load("Data/df_with_tokens_filtered.Rdata")
+load("data/df_with_tokens_filtered.Rdata")
 # load meta data
-load("Data/stm_model_inputs_neutral_disag.Rdata")
+load("data/stm_model_inputs_neutral_disag.Rdata")
 remove(docs, vocab)
 
 #################### Inspect topics
@@ -194,19 +197,19 @@ stmCorrViz(PrevFit, "Figures/corrviz.html", documents_raw=meta$text, documents_m
 # estimate effects of metadata
 prep_no_inter <- estimateEffect(1:30 ~ s(days) + position, PrevFit,
                        meta = meta, uncertainty = "Global")
-save(prep_no_inter, file = "Models/estimation_30_content_no_interaction.Rdata")
+save(prep_no_inter, file = "data/models/estimation_30_content_no_interaction.Rdata")
 
 summary(prep_no_inter, topics = 1)
 
 # estimate interaction effects of position and day
 prep_inter <- estimateEffect(1:30 ~ s(days)*position, PrevFit,
                        meta = meta, uncertainty = "Global")
-save(prep_inter, file = "Models/estimation_30_content_interaction.Rdata")
+save(prep_inter, file = "data/models/estimation_30_content_interaction.Rdata")
 
 summary(prep_inter, topics = 1)
 
 # plot interaction of position and day
-load("Models/estimation_30_content_interaction.Rdata")
+load("data/models/estimation_30_content_interaction.Rdata")
 
 for (i in seq(length(topic_names))) {
   name <- str_c("Figures/content_interaction_disag_30/positionxtime/", topic_names[[i]], ".png")

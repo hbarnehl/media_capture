@@ -18,7 +18,8 @@ import re
 import dateparser
 import numpy as np
 
-df = pd.read_csv("dataset.csv")
+# set directory
+df = pd.read_csv("data/dataset.csv")
 
 # Unify outlet names
 df.loc[df["page"].str.startswith('Canal13'), "page"] = "Canal13"
@@ -80,10 +81,10 @@ df["date"] = pd.to_datetime(df["date"])
 # Create year variable
 df["year"] = pd.DatetimeIndex(df.date).year
 
-df.to_csv("dataset1.csv", index=False)
+df.to_csv("data/dataset1.csv", index=False)
 
 # Load dataset
-df = pd.read_csv("dataset1.csv")
+df = pd.read_csv("data/dataset1.csv")
 
 # Delete duplicate articles
 df.drop_duplicates(subset="url", inplace=True, ignore_index=True)
@@ -151,7 +152,7 @@ df.replace({"text": repl_dict, "title": repl_dict},
 df = df.loc[df["text"].apply(
     lambda x: len(str(x)) > 200)].reset_index(drop=True)
 
-df.to_csv("dataset_token_ready.csv", index=False)
+df.to_csv("data/dataset_token_ready.csv", index=False)
 
 # save text files separately as csv file
-df["text"].to_csv("texts.csv", index = False)
+df["text"].to_csv("data/texts.csv", index = False)

@@ -20,7 +20,7 @@ import gensim
 import csv
 
 # Tokenize article texts with spacy
-csv_gen = (row for row in open("texts.csv"))
+csv_gen = (row for row in open("data/texts.csv"))
 
 # Load Spanish language model
 nlp = spacy.load('es_core_news_md', disable=["parser", "attribute_ruler", "ner"])
@@ -48,24 +48,24 @@ for i, doc in enumerate(
 tokenlist = tokenlist[1:]
 
 # Save to pickle
-with open("tokens/tokens.pkl", "wb") as f:
+with open("data/tokens.pkl", "wb") as f:
     pickle.dump(tokenlist, f)
 
 # Integrate tokenlist into df, useful for later structural topic model and all subsampling
 # Load tokenlist
-with open("tokens/tokens.pkl", "rb") as f:
+with open("data/tokens.pkl", "rb") as f:
     tokenlist = pickle.load(f)
 
 # Integrate tokenlist back into dataframe
-df = pd.read_csv("dataset_token_ready.csv")
+df = pd.read_csv("data/dataset_token_ready.csv")
 df = df.assign(tokens=tokenlist)
 
 # Save dataset as pickle (csv does not work, because it cannot save the lists of tokens as cell entries)
-df.to_pickle("dataset_with_tokens.pkl")
+df.to_pickle("data/dataset_with_tokens.pkl")
 
 # Create Trigrams with Gensim
 # Select tokens and subsample
-tokenlist = pd.read_pickle("dataset_with_tokens.pkl")[["page", "tokens"]]
+tokenlist = pd.read_pickle("data/dataset_with_tokens.pkl")[["page", "tokens"]]
 tokenlist = tokenlist["tokens"].tolist()
 
 # Make bigram and trigram models
@@ -82,6 +82,6 @@ for doc in tokenlist:
     tokenstring = [" ".join([token for token in doc])]
     tokens_trigrams.append(tokenstring)
 
-with open("tokens/tokens_trigrams.csv", "w") as f:
+with open("data/tokens_trigrams.csv", "w") as f:
     wr = csv.writer(f)
     wr.writerows(tokens_trigrams)

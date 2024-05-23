@@ -1,12 +1,23 @@
+"""
+This script visualizes the sentiment of the news outlets towards the regime and the opposition. It does the following:
+1. Loads the preprocessed dataset
+2. Keeps only data from 2018 onwards
+3. Transforms the date to datetime format
+4. Creates different date periods for aggregation
+5. Creates categories for the outlets
+6. Aggregates the sentiment per position and year-quarter
+7. Creates and aggregates polarity variable
+8. Creates and aggregates independence scores
+9. Vizualizes polarity and independence scores
+"""
+
+
 import pickle
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import datetime
 import matplotlib.pyplot as plt
-
-# Enable inline plotting
-%matplotlib inline
 
 # Create uniform color palette
 palette = {
@@ -24,8 +35,8 @@ sns.set(rc={'figure.figsize': (20, 10)})
 sns.set_theme(style='whitegrid', font_scale=1.5)
 
 # Set save location
-figureloc = "/home/hennes/thesis/Figures/topics/"
-dataloc = "/home/hennes/thesis/Data/"
+figureloc = "Figures/topics/"
+dataloc = "data/"
 
 # Load data
 with open(dataloc + "dataset_sentiment.pkl", "rb") as f:

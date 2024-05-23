@@ -1,3 +1,15 @@
+"""
+This script visualizes the topics of the news outlets towards the regime and the opposition. It does the following:
+1. Loads the preprocessed dataset
+2. Keeps only data from 2017 onwards
+3. Transforms the date to datetime format
+4. Creates different date periods for aggregation
+5. Creates categories for the outlets
+6. Aggregates the topics per position and year-quarter
+7. Creates and aggregates independence scores
+8. Vizualizes independence scores
+"""
+
 import pickle
 import pandas as pd
 import numpy as np
@@ -7,9 +19,9 @@ import datetime
 import math
 
 # Save location of data
-data_folder = "/home/hennes/thesis/Data/"
+data_folder = "data/"
 # Save location of figures
-figure_loc = "/home/hennes/thesis/Figures/topics/"
+figure_loc = "Figures/topics/"
 
 # Create uniform color palette
 palette = {
