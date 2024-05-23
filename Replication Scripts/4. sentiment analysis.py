@@ -1,3 +1,7 @@
+"""
+This script performs sentiment analysis on the sentences that mention president Ortega in the dataset.
+"""
+
 import pandas as pd
 import re
 import pysentimiento

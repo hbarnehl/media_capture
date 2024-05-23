@@ -8,4 +8,4 @@ We additionally include instructions on how to quickly apply the sentiment-analy
 The folder "replication scripts" contains the code that was used to produce the independence scores and the figures of the article. Because the text is copyrighted, we cannot include it in this repository.
 
 ## Implementing the Polarity Independence Score
-The sentiment analysis jupyter notebook contains instructions on how to apply the polarity independence score to new cases. All that is required is data in the appropriate form: Tabular data containing texts of news media articles, with additional columns recording the outlet, the publishing date, and (optionally) a column recording the allegiance of the outlet (regime, opposition, or nominally independent).
+The sentiment analysis jupyter notebook contains instructions on how to apply the polarity independence score to new cases. All that is required is data in the appropriate form: Tabular data containing texts of news media articles, with additional columns recording the outlet, and the publishing date. The method allows usage of the method for everyone with minial or no python knowledge.
